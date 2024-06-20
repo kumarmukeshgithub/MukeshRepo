@@ -9,18 +9,18 @@ object IPLDataAnalyzer {
       .appName("IPLDataAnalyzer")
       .master("local[*]")
       .getOrCreate()
-    val df = spark.read
+    val IPLDf= spark.read
       .option("header", "true")
       .option("inferSchema", "true")  // Infers the schema of the DataFrame
       .csv("/Users/mukeshbehera/Documents/IPL_2023_DATASET.csv")
     // Show the DataFrame
-    val renamedDF = df.withColumnRenamed("_c0", "SL No")
+    val renamedColumnDF = IPLDf.withColumnRenamed("_c0", "SL No")
       .withColumnRenamed("COST IN ₹ (CR.)","COST IN ₹")
       .withColumnRenamed("Cost IN $ (000)","Cost IN $")
-    val renameDF1 = renamedDF .drop("Base Price IN ₹", "Base Price IN $")
-    val cleanedDF = renameDF1.filter(col("2022 Squad").isNotNull)
+    val removedDF = renamedColumnDF .drop("Base Price IN ₹", "Base Price IN $")
+    val filteredDF = removedDF.filter(col("2022 Squad").isNotNull)
 
-    val updatedDF = cleanedDF.withColumn("Type", initcap(col("Type")))
+    val updatedDF = filteredDF.withColumn("Type", initcap(col("Type")))
 
 
 
